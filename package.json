@@ -1,0 +1,21 @@
+{
+  "name": "snapgram",
+  "version": "1.0.0",
+  "description": "<img src=\"./screenshots/snapgram.png\" alt=\"Project Banner\">",
+  "main": "index.js",
+  "scripts": {
+    "build": "npm install --prefix server && npm install --include=dev --prefix client && npm run build --prefix client",
+    "start": "npm run start --prefix server"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mohammedsuhail364/MomentUs.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mohammedsuhail364/MomentUs/issues"
+  },
+  "homepage": "https://github.com/mohammedsuhail364/MomentUs#readme"
+}
