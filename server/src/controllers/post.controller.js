@@ -52,6 +52,29 @@ export const getPosts = async (_, res) => {
   const posts = await Post.find().sort("-createdAt").populate("creator");  
   res.json(posts);
 };
+export const getPost = async (req, res) => {
+  try {
+    const { postId } = req.params;
+
+    // if (!postId || !mongoose.Types.ObjectId.isValid(postId)) {
+    //   return res.status(400).json({ message: "Invalid postId" });
+    // }
+
+    const post = await Post.findById(postId)
+      .populate("creator", "name imageUrl")
+      .lean();
+
+    if (!post) {
+      return res.status(404).json({ message: "Post not found" });
+    }
+
+    return res.status(200).json(post);
+  } catch (err) {
+    console.error("getPost error:", err);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
 
 // PATCH /posts/:id/like  (toggle)
 export const toggleLike = async (req, res) => {
@@ -142,5 +165,83 @@ export const unsavePost = async (req, res) => {
   } catch (err) {
     console.error("Unsave post failed:", err);
     return res.status(500).json({ message: "Failed to unsave post" });
+  }
+};
+
+export const getSavedPosts = async (req, res) => {
+  try {
+    const userId = req.user?._id;
+
+    if (!userId || !mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    const page = Math.max(parseInt(req.query.page, 10) || 1, 1);
+    const limit = Math.min(Math.max(parseInt(req.query.limit, 10) || 20, 1), 50);
+    const skip = (page - 1) * limit;
+
+    const user = await User.findById(userId).select("savedPosts").lean();
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    const savedIds = (user.savedPosts || []).map(String);
+    if (savedIds.length === 0) {
+      return res.status(200).json({ posts: [], page, limit, total: 0, hasMore: false });
+    }
+
+    // preserve order + paginate
+    const pagedIds = savedIds.slice(skip, skip + limit);
+
+    const posts = await Post.find({ _id: { $in: pagedIds } })
+      .populate("creator", "name imageUrl")
+      .lean();
+
+    // Keep same order as savedIds; remove deleted posts (null)
+    const map = new Map(posts.map((p) => [String(p._id), p]));
+    const ordered = pagedIds.map((id) => map.get(id)).filter(Boolean);
+
+    return res.status(200).json({
+      posts: ordered,
+      page,
+      limit,
+      total: savedIds.length,
+      hasMore: skip + limit < savedIds.length,
+    });
+  } catch (err) {
+    console.error("getSavedPosts error:", err);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+export const getLikedPosts = async (req, res) => {
+  try {
+    const userId = req.user?._id;
+
+    if (!userId || !mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    const page = Math.max(parseInt(req.query.page, 10) || 1, 1);
+    const limit = Math.min(Math.max(parseInt(req.query.limit, 10) || 20, 1), 50);
+    const skip = (page - 1) * limit;
+
+    const [posts, total] = await Promise.all([
+      Post.find({ likes: userId })
+        .sort({ createdAt: -1 })
+        .populate("creator", "name imageUrl")
+        .skip(skip)
+        .limit(limit)
+        .lean(),
+      Post.countDocuments({ likes: userId }),
+    ]);
+
+    return res.status(200).json({
+      posts,
+      page,
+      limit,
+      total,
+      hasMore: skip + limit < total,
+    });
+  } catch (err) {
+    console.error("getLikedPosts error:", err);
+    return res.status(500).json({ message: "Internal server error" });
   }
 };

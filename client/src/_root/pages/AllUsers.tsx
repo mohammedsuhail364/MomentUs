@@ -3,12 +3,20 @@ import UserCard from "@/components/ui/shared/UserCard";
 import { useToast } from "@/hooks/use-toast";
 import { useGetUsers } from "@/lib/react-query/queriesAndMutations";
 
+type Creator = {
+  _id: string;
+  name?: string;
+  username?: string;
+  email?: string;
+  imageUrl?: string;
+};
 
 const AllUsers = () => {
   const { toast } = useToast();
 
   const { data: creators, isLoading, isError: isErrorCreators } = useGetUsers();
-
+  console.log(creators);
+  
   if (isErrorCreators) {
     toast({ title: "Something went wrong." });
     
@@ -23,8 +31,8 @@ const AllUsers = () => {
           <Loader />
         ) : (
           <ul className="user-grid">
-            {creators?.documents.map((creator) => (
-              <li key={creator?.$id} className="flex-1 min-w-[200px] w-full  ">
+            {creators?.map((creator:Creator) => (
+              <li key={creator?._id} className="flex-1 min-w-[200px] w-full  ">
                 <UserCard user={creator} />
               </li>
             ))}

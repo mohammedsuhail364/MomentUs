@@ -88,6 +88,15 @@ export async function deleteSavedPost(savedId: string) {
   await API.delete(`/posts/save/${savedId}`);
   return { status: "ok" };
 }
+export async function getSavedPosts() {
+  const res=await API.get("/posts/get-saved-posts");
+  return res.data;
+}
+export async function getLikedPosts() {
+  const res=await API.get("/posts/get-liked-posts");
+  return res.data;
+}
+
 
 /* ========================== SEARCH & PAGINATION ========================== */
 

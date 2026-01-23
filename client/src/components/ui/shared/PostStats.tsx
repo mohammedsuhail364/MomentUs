@@ -18,8 +18,7 @@ type PostStatsProps = {
 };
 
 const PostStats = ({ post, userId }: PostStatsProps) => {
-  console.log(post,"post");
-  
+  // const navigate=useNavigate();
   // likes are already userId strings
   const [likes, setLikes] = useState<string[]>(post?.likes || []);
   const [isSaved, setIsSaved] = useState(false);
@@ -32,8 +31,8 @@ const PostStats = ({ post, userId }: PostStatsProps) => {
   useEffect(() => {
     if (!currentUser) return;
 
-    const saved = currentUser.savedPosts?.some(
-      (p: { _id: string }) => p._id === post._id
+    const saved = currentUser?.savedPosts?.some(
+      (p: { _id: string }) => p._id === post._id,
     );
 
     setIsSaved(!!saved);
@@ -50,14 +49,15 @@ const PostStats = ({ post, userId }: PostStatsProps) => {
     // optimistic update
     setLikes(updatedLikes);
 
-    likePost({ postId: post._id,likesArray:post.likes });
+    likePost({ postId: post._id, likesArray: post.likes });
   };
 
   const handleSavePost = (e: React.MouseEvent) => {
     e.stopPropagation();
     setIsSaved((prev) => !prev);
-    savePost({ postId: post._id,userId:currentUser._id });
+    savePost({ postId: post._id, userId: currentUser._id });
   };
+  console.log(isSaved, "isSaved");
 
   return (
     <div className="flex justify-between items-center z-20">
@@ -84,11 +84,7 @@ const PostStats = ({ post, userId }: PostStatsProps) => {
           <Loader />
         ) : (
           <img
-            src={
-              isSaved
-                ? "/assets/icons/saved.svg"
-                : "/assets/icons/save.svg"
-            }
+            src={isSaved ? "/assets/icons/saved.svg" : "/assets/icons/save.svg"}
             alt="save"
             width={20}
             height={20}

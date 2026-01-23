@@ -11,8 +11,10 @@ import {
   deleteSavedPost,
   getCurrentUser,
   getInfinitePosts,
+  getLikedPosts,
   getPostById,
   getRecentPosts,
+  getSavedPosts,
   getUserById,
   getUsers,
   likePost,
@@ -121,6 +123,18 @@ export const useDeleteSavedPost = () => {
     },
   });
 };
+export const useGetLikedPosts=()=>{
+  return useQuery({
+    queryKey: [QUERY_KEYS.GET_LIKED_POSTS],
+    queryFn: getLikedPosts,
+  });
+}
+export const useGetSavedPosts=()=>{
+  return useQuery({
+    queryKey: [QUERY_KEYS.GET_SAVED_POSTS],
+    queryFn: getSavedPosts,
+  });
+}
 export const useGetCurrentUser = () => {
   return useQuery({
     queryKey: [QUERY_KEYS.GET_CURRENT_USER],

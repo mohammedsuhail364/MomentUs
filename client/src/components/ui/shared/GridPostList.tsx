@@ -1,6 +1,7 @@
 import { useUserContext } from "@/context/AuthContext";
 import { Link } from "react-router-dom";
 import PostStats from "./PostStats";
+import { useGetCurrentUser } from "@/lib/react-query/queriesAndMutations";
 
 type Creator = {
   _id: string;
@@ -21,12 +22,13 @@ type GridPostListProps = {
 };
 
 const GridPostList = ({ posts, showUser = true, showStats = true }: GridPostListProps) => {
-  const { user } = useUserContext();
-
+  const { data: user } = useGetCurrentUser();
+  console.log(posts);
+  
   return (
     <ul className="grid-container">
-      {posts?.map((post) => (
-        <li key={post._id} className="relative min-w-80 h-80">
+      {posts?.map((post,index) => (
+        <li key={index} className="relative min-w-80 h-80">
           <Link to={`/posts/${post._id}`} className="grid-post_link">
             <img
               src={post.imageUrl}
