@@ -5,7 +5,7 @@ import connectDB from "./config/db.js";
 import path from "path";
 
 connectDB();
-
+const __dirname = path.resolve();
 if (process.env.NODE_ENV === "production") {
   const clientPath = path.join(__dirname, "../client/dist");
 
