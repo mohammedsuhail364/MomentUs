@@ -39,7 +39,6 @@ const Explore = () => {
   }
 
   const shouldShowSearchResults = searchValue.trim() !== "";
-  const shouldShowPosts = !shouldShowSearchResults && posts.length > 0;
   const isEndOfPosts = !shouldShowSearchResults && posts.length === 0;
 
   return (

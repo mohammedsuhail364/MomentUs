@@ -9,7 +9,7 @@ import Loader from "./Loader";
 
 type Post = {
   _id: string;
-  likes: string[];
+  likes?: string[];
 };
 
 type PostStatsProps = {
@@ -49,13 +49,13 @@ const PostStats = ({ post, userId }: PostStatsProps) => {
     // optimistic update
     setLikes(updatedLikes);
 
-    likePost({ postId: post._id, likesArray: post.likes });
+    likePost({ postId: post._id });
   };
 
   const handleSavePost = (e: React.MouseEvent) => {
     e.stopPropagation();
     setIsSaved((prev) => !prev);
-    savePost({ postId: post._id, userId: currentUser._id });
+    savePost({ postId: post._id });
   };
   console.log(isSaved, "isSaved");
 

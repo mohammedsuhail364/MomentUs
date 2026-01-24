@@ -67,11 +67,9 @@ export const useLikePost = () => {
   return useMutation({
     mutationFn: ({
       postId,
-      likesArray,
     }: {
       postId: string;
-      likesArray: string[];
-    }) => likePost(postId, likesArray),
+    }) => likePost(postId),
     onSuccess: (data) => {
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEYS.GET_POST_BY_ID, data?.$id],
@@ -91,8 +89,8 @@ export const useLikePost = () => {
 export const useSavePost = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ postId, userId }: { postId: string; userId: string }) =>
-      savePost(postId, userId),
+    mutationFn: ({ postId }: { postId: string }) =>
+      savePost(postId),
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEYS.GET_RECENT_POSTS],
@@ -163,8 +161,8 @@ export const useUpdatePost = () => {
 export const useDeletePost = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ postId, imageId }: { postId: string; imageId: string }) =>
-      deletePost(postId, imageId),
+    mutationFn: ({ postId }: { postId: string}) =>
+      deletePost(postId),
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEYS.GET_RECENT_POSTS],

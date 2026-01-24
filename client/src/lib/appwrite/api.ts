@@ -67,19 +67,19 @@ export async function updatePost(post: IUpdatePost) {
   return res.data;
 }
 
-export async function deletePost(postId: string,imageId:string) {
+export async function deletePost(postId: string) {
   await API.delete(`/posts/${postId}`);
   return { status: "ok" };
 }
 
 /* ========================== LIKES & SAVES ========================== */
 
-export async function likePost(postId: string,likesArray:any) {
+export async function likePost(postId: string) {
   const res = await API.patch(`/posts/${postId}/like`);
   return res.data;
 }
 
-export async function savePost(postId: string,userId:string) {
+export async function savePost(postId: string) {
   const res = await API.post(`/posts/${postId}/save`);
   return res.data;
 }
