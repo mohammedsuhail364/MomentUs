@@ -3,6 +3,7 @@ dotenv.config();
 import app from "./app.js";
 import connectDB from "./config/db.js";
 import path from "path";
+import express from "express";
 
 connectDB();
 const __dirname = path.resolve();
